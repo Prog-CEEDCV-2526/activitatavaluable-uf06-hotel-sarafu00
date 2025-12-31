@@ -150,6 +150,12 @@ public class App {
     public static void reservarHabitacio() {
         System.out.println("\n===== RESERVAR HABITACIÓ =====");
         String hab = seleccionarTipusHabitacioDisponible();
+
+        if (hab == null) {
+            System.out.println("No hi ha habitacions disponibles del tipus seleccionat.");
+            return; 
+        }
+
         ArrayList<String> serveis = seleccionarServeis();
         float preu = calcularPreuTotal(hab, serveis);
         int codi = generarCodiReserva();
@@ -231,52 +237,48 @@ public class App {
         System.out.print("Vol afegir un servei? (s/n): ");
         String lletra = sc.nextLine();
         
-        do {
-            if (lletra.equals("s")) { //si s'escriu "s" s'imprimeix "seleccione un servei" fins que l'usuari vuiga parar 
-                int numServei = llegirEnter("Seleccione servei (0 per finalitzar): ");
-                sc.nextLine(); // per a netejar el buffer
+        while (lletra.equalsIgnoreCase("s")) {
+        if (reservesInfo.size() == 4) {
+            System.out.println("Ja has seleccionat tots els serveis");
+            break;
+        }
+        
+        int numServei = llegirEnter("Seleccione servei (0 per finalitzar): ");
 
-                if (numServei == 0) { //per a ixir del bucle si l'usuari apreta 0 
-                    break;
-                }
+        if (numServei == 0) {
+            break;
+        }
 
-                String nomServei = "";
-                switch (numServei) {
-                    case 1:
-                        nomServei = SERVEI_ESMORZAR;
-                        break;
-                    case 2:
-                        nomServei = SERVEI_GIMNAS;
-                        break;
-                    case 3:
-                        nomServei = SERVEI_SPA;
-                        break;
-                    case 4:
-                        nomServei = SERVEI_PISCINA;
-                        break;
-                    case 0:
-                        break;
-                    default:
-                        System.out.println("Opció invàlida");
-                        continue;
-                }
-
-                if (numServei >= 1 && numServei <= 4 && !reservesInfo.contains(nomServei)) { //si el número està dins del rang correcte i 
-                // no està repetit s'afegeix
-                    reservesInfo.add(nomServei); 
-                    System.out.println("Servei afegit: " + nomServei);
-                }
-
-                if (reservesInfo.size() == 4){
-                    System.out.println("Ja has seleccionat tots els serveis");
-                    break; // per a ixir del bucle 
-                }
-            } else if (lletra.equals("n")){
+        String nomServei = "";
+        switch (numServei) {
+            case 1: 
+                nomServei = SERVEI_ESMORZAR; 
                 break;
-            }else {
+            case 2: 
+                nomServei = SERVEI_GIMNAS; 
+                break;
+            case 3: 
+                nomServei = SERVEI_SPA; 
+                break;
+            case 4: 
+                nomServei = SERVEI_PISCINA; 
+                break;
+            default:
                 System.out.println("Opció invàlida");
-            }
-        } while (!lletra.equals("n"));
+                continue;
+        }
+
+        if (!reservesInfo.contains(nomServei)) {
+            reservesInfo.add(nomServei);
+            System.out.println("Servei afegit: " + nomServei);
+        } else {
+            System.out.println("Aquest servei ja està afegit");
+        }
+        
+        sc.nextLine(); // limpiar buffer después de llegirEnter
+        System.out.print("Vol afegir un altre servei? (s/n): ");
+        lletra = sc.nextLine();
+    }
 
         return reservesInfo;
     }
@@ -338,8 +340,8 @@ public class App {
      */
     public static void alliberarHabitacio() {
         System.out.println("\n===== ALLIBERAR HABITACIÓ =====");
-         boolean found = false;
-        do {
+         
+        while(true){
             int codi = llegirEnter("Introdueix el codi de reserva: ");
             
             if (reserves.containsKey(codi)) {
@@ -352,12 +354,12 @@ public class App {
                 //creem una nova variable i li sumem uno a la capacitat actual del tipus d'habitació
                 int novaCapacitat = disponibilitatHabitacions.get(tipusHab) + 1;
                 disponibilitatHabitacions.put(tipusHab, novaCapacitat);
-                found = true; //es trenca el bucle 
+                break; //es trenca el bucle 
             } else {
                 System.out.println("No hi ha ninguna reserva en ixe codi");
             }
 
-        } while (!found);
+        }
 
         System.out.println("Habitació alliberada correctament.");
         System.out.println("Disponibilitat actualitzada.");
