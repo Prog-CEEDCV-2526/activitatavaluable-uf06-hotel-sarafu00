@@ -1,4 +1,4 @@
-package src.main.java.com.hotel;
+package com.hotel;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
