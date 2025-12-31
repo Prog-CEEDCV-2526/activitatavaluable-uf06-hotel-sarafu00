@@ -1,0 +1,8 @@
+# Maven / Java
+target/
+
+# VS Code
+.vscode/
+
+# Sistema
+.DS_Store
